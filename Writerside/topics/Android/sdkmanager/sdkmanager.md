@@ -100,5 +100,9 @@ Available Updates:
 ~ ❯ $ANDROID_HOME/tools/bin/sdkmanager --list
 ```
 
+## 推荐
+```Bash
+${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --list
+```
 
 

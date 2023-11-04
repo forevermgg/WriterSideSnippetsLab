@@ -33,14 +33,17 @@ case "`uname`" in
     nonstop=true
     ;;
 esac
-
 echo "cygwin = $cygwin; darwin = $darwin; msys = $msys; nonstop = $nonstop"
 
+# Unless explicitly specified, NDK version will be set to match exactly the required one
 NDK_VERSION=${FILAMENT_NDK_VERSION:-$(cat $(dirname $0)/ndk.version)}
 echo "$NDK_VERSION"
-
 # $ANDROID_HOME/tools/bin/sdkmanager --install "ndk;25.2.9519653"
 # 坑：archlinux 需要 sudo archlinux-java set java-8-openjdk
+# Install the required NDK version specifically (if not present)
+if [[ ! -d "${ANDROID_HOME}/ndk/$NDK_VERSION" ]]; then
+    ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager "ndk;$FILAMENT_NDK_VERSION" > /dev/null
+fi
 
 
 # Determine the Java command to use to start the JVM.
