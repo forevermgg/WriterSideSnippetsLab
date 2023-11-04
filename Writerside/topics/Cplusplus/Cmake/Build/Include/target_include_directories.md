@@ -1,0 +1,3 @@
+## target_include_directories
+target_include_directories 是一个 CMake 命令，用于向特定的目标（如可执行程序、静态库或共享库）添加包含目录（include directory）。
+通过使用 target_include_directories 命令，您可以向特定的目标指定包含目录，以确保在编译过程中正确地找到所需的头文件。这对于管理项目中的头文件依赖关系非常重要，并确保代码在不同目标之间正确共享和访问头文件。
