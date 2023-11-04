@@ -39,6 +39,8 @@ echo "cygwin = $cygwin; darwin = $darwin; msys = $msys; nonstop = $nonstop"
 NDK_VERSION=${FILAMENT_NDK_VERSION:-$(cat $(dirname $0)/ndk.version)}
 echo "$NDK_VERSION"
 
+# $ANDROID_HOME/tools/bin/sdkmanager --install "ndk;25.2.9519653"
+# 坑：archlinux 需要 sudo archlinux-java set java-8-openjdk
 
 
 # Determine the Java command to use to start the JVM.
