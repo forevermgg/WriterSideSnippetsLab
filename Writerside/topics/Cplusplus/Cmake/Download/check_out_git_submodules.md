@@ -29,3 +29,30 @@ endif()
 	path = third_party/zlib
 	url = https://github.com/madler/zlib
 ```
+
+## 使用
+https://github.com/google/bloaty/blob/main/CMakeLists.txt
+```CMake
+add_subdirectory(third_party/re2)
+include_directories(third_party/re2)
+
+add_subdirectory(third_party/capstone)
+include_directories(third_party/capstone/include)
+
+add_subdirectory(third_party/protobuf/cmake)
+include_directories(SYSTEM third_party/protobuf/src)
+
+add_subdirectory(third_party/zlib)
+include_directories(SYSTEM third_party/zlib)
+
+set_property(TARGET re2 PROPERTY FOLDER "third_party")
+set_property(TARGET zlib PROPERTY FOLDER "third_party")
+set_property(TARGET zlibstatic PROPERTY FOLDER "third_party")
+set_property(TARGET libprotobuf PROPERTY FOLDER "third_party")
+set_property(TARGET libprotobuf-lite PROPERTY FOLDER "third_party")
+set_property(TARGET libprotoc PROPERTY FOLDER "third_party")
+set_property(TARGET protoc PROPERTY FOLDER "third_party")
+```
+
+
+
