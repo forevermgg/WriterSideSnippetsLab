@@ -71,6 +71,10 @@ case "$(uname -s)" in
 esac
 echo "IS_DARWIN = $IS_DARWIN;"
 
+UNAME=$(uname)
+LC_UNAME=$(echo "${UNAME}" | tr '[:upper:]' '[:lower:]')
+echo "LC_UNAME = $LC_UNAME;"
+
 # Unless explicitly specified, NDK version will be set to match exactly the required one
 NDK_VERSION=${FILAMENT_NDK_VERSION:-$(cat $(dirname $0)/ndk.version)}
 echo "$NDK_VERSION"
