@@ -35,6 +35,12 @@ case "`uname`" in
 esac
 echo "cygwin = $cygwin; darwin = $darwin; msys = $msys; nonstop = $nonstop"
 
+case "$(uname -s)" in
+    Darwin*) IS_DARWIN=1;;
+    *) ;;
+esac
+echo "IS_DARWIN = $IS_DARWIN;"
+
 # Unless explicitly specified, NDK version will be set to match exactly the required one
 NDK_VERSION=${FILAMENT_NDK_VERSION:-$(cat $(dirname $0)/ndk.version)}
 echo "$NDK_VERSION"
