@@ -30,4 +30,30 @@ foreach(LINE IN LISTS DEPENDENCIES)
     endif()
 endforeach()
 ```
-
+### MAKE_DIRECTORY
+https://github.com/google/bloaty/blob/main/CMakeLists.txt
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src)
+```CMake
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src)
+if(PROTOC_FOUND)
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src/bloaty.pb.cc
+  DEPENDS protoc ${CMAKE_CURRENT_SOURCE_DIR}/src/bloaty.proto
+  COMMAND protoc ${CMAKE_CURRENT_SOURCE_DIR}/src/bloaty.proto
+      --cpp_out=${CMAKE_CURRENT_BINARY_DIR}/src
+      -I${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+else()
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src/bloaty.pb.cc
+  COMMAND protoc ${CMAKE_CURRENT_SOURCE_DIR}/src/bloaty.proto
+      --cpp_out=${CMAKE_CURRENT_BINARY_DIR}/src
+      -I${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+endif()
+```
+### COPY
+```CMake
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/bloaty_package.bloaty
+DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+```
