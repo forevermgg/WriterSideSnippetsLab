@@ -118,4 +118,5 @@ if(CMAKE_SYSTEM_NAME MATCHES "^Windows|Linux|Android")
 endif()
 ```
 通过使用`CMAKE_SYSTEM_NAME`变量和正则表达式的匹配`（MATCHES）`判断条件，可以确定操作系统名称是否与指定的模式匹配。
+
 在代码中，如果`CMAKE_SYSTEM_NAME`的值匹配正则表达式 "^Windows|Linux|Android"，即以 "Windows"、"Linux" 或 "Android" 开头，则执行下面的代码块。
