@@ -1,6 +1,36 @@
 echo "This script is intended to run in a CI environment and may modify your current environment."
 echo "Please refer to BUILDING.md for more information."
 
+
+function ensure_android_build {
+    if [[ "${ANDROID_HOME}" == "" ]]; then
+        echo "Error: ANDROID_HOME is not set, exiting"
+        exit 1
+    fi
+    echo "ANDROID_HOME = ${ANDROID_HOME}"
+
+    NDK_VERSION=${FILAMENT_NDK_VERSION:-$(cat $(dirname $0)/ndk.version)}
+    echo "$NDK_VERSION"
+    # shellcheck disable=SC2012
+    if [[ -z $(ls "${ANDROID_HOME}/ndk/" | sort -V | grep "^${NDK_VERSION}") ]]; then
+        echo "Error: Android NDK side-by-side version ${NDK_VERSION} or compatible must be installed, exiting"
+        exit 1
+    fi
+
+    local cmake_version=$(cmake --version)
+    echo "cmake_version = ${cmake_version}"
+    if [[ "${cmake_version}" =~ ([0-9]+)\.([0-9]+)\.[0-9]+ ]]; then
+        if [[ "${BASH_REMATCH[1]}" -lt "${CMAKE_MAJOR}" ]] || \
+           [[ "${BASH_REMATCH[2]}" -lt "${CMAKE_MINOR}" ]]; then
+            echo "Error: cmake version ${CMAKE_MAJOR}.${CMAKE_MINOR}+ is required," \
+                 "${BASH_REMATCH[1]}.${BASH_REMATCH[2]} installed, exiting"
+            exit 1
+        fi
+    fi
+}
+
+ensure_android_build
+
 read -r -p "Do you wish to proceed (y/n)? " choice
 case "${choice}" in
 y | Y)
