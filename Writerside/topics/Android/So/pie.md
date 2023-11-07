@@ -2,8 +2,10 @@
 > https://ch3nye.top/Linux%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E6%9E%90%E7%AC%94%E8%AE%B0(ELF)/
 
 最近在Debian下写C时，发现用readelf命令查看编译后的可执行文件类型时，发现文件类型是DYN (Shared object file)，而不是EXEC (Executable file)。
-
+```Bash
 readelf -h a.out
+Type:                              DYN (Shared object file)
+```
 
 多方查找，发现gcc默认加了--enable-default-pie选项（https://www.v2ex.com/amp/t/481562）
 
@@ -14,5 +16,8 @@ readelf -h a.out
 > 引入PIE的原因是让程序能装载在随机的地址，通常情况下，内核都在固定的地址运行，如果能改用位置无关，那攻击者就很难借助系统中的可执行码实施攻击了。类似缓冲区溢出之类的攻击将无法实施。而且这种安全提升的代价很小
 
 因此，可以加上-no-pie 禁用掉该默认选项：
-
+```Bash
 readelf -h a.out
+
+Type:                              EXEC (Executable file)
+```
