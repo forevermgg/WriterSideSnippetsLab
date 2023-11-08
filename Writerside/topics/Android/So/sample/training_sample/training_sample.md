@@ -17,3 +17,11 @@ Hide these hints with HOMEBREW_NO_ENV_HINTS (see `man brew`).
 
 
 ```
+find . -type f -exec grep -Iq . {} \; -print 
+
+
+
+
+.shstrtab 的内容在这个在文件中的偏移为 s_offset 所指示，也就是 0x196A 。我们随便找另外一个节来找该节的名字：
+
+这个节的 sh_name 在 .shstrtab 中的偏移是 0xea , 故在文件中的偏移为 0x196A + 0xea = 0x1a54
