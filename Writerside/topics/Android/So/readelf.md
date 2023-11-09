@@ -239,7 +239,7 @@ readelf -r Lib.so
 .rel.dyn 和 .rel.plt 是动态定位辅助段。由链接器产生，存在于可执行文件或者动态库文件内。借助这两个辅助段可以动态修改对应.got和.got.plt段，从而实现运行时重定位。
 
 ## 参考
-地址无关代码 http://nicephil.blinkenshell.org/my_book/ch07s03.html
-延迟绑定 http://nicephil.blinkenshell.org/my_book/ch07s04.html
-理解重定位 http://3xp10it.cc/%E4%BA%8C%E8%BF%9B%E5%88%B6/2017/12/05/%E7%90%86%E8%A7%A3%E9%87%8D%E5%AE%9A%E4%BD%8D/
-深入理解 Linux 位置无关代码 PIC https://blog.csdn.net/feelabclihu/article/details/108289461
+![地址无关代码](http://nicephil.blinkenshell.org/my_book/ch07s03.html)
+![延迟绑定](http://nicephil.blinkenshell.org/my_book/ch07s04.html)
+![理解重定位](http://3xp10it.cc/%E4%BA%8C%E8%BF%9B%E5%88%B6/2017/12/05/%E7%90%86%E8%A7%A3%E9%87%8D%E5%AE%9A%E4%BD%8D/)
+![深入理解 Linux 位置无关代码 PIC](https://blog.csdn.net/feelabclihu/article/details/108289461)
