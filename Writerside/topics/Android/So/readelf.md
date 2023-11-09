@@ -42,6 +42,21 @@ readelf -x <name/of/section> <path/for/elf>
 objdump -d -j <name/of/section> <path/for/elf>
 ```
 
+### 十六进制显示section的内容
+```Bash
+# 十六进制显示 section 的内容, 可以使用 section 编号或者名字
+# readelf -x --hex-dump=<number|name>
+readelf -x 29 /bin/grep  # 查看 .shstrtab section, 编号 29
+readelf -x .data /bin/grep  # 查看 .data section
+```
+### 字符串方式显示section的内容
+```Bash
+# 字符串方式显示 section 的内容, 可以使用 section 编号或者名字
+# readelf -p --string-dump=<number|name>
+readelf -p 29 /bin/grep  # 查看 .shstrtab section, 编号 29
+readelf -p .data /bin/grep  # 查看 .data section
+```
+
 ## Program Headers
 
 ### 获取程序头表（段表）
@@ -61,10 +76,11 @@ readelf -l <path/for/elf>
 ```Bash
 readelf -S <filename>
 ```
-
 ### `.dynsym` && `.symtab`
 ####  符号表
 符号表包含用来定位、重定位程序中符号定义和引用的信息，简单的理解就是符号表记录了该文件中的所有符号，所谓的符号就是经过修饰了的函数名或者变量名。
+动态符号表，段名通常叫做.dynsym，用于表示模块之间的符号导入导出关系。.dynsym只保存了与动态链接相关的符号，.symtab中往往保存了所有符号，包括.dynsym中的符号。一般动态链接的模块同时拥有.dynsym和.symtab两个表。
+与.symtab类似，动态符号表也需要一些辅助的表，比如动态符号字符串表.dynstr。 由于动态链接在程序运行时查找符号，为了加快符号的查找过程，往往还有辅助的符号哈希表.hash。
 `.symtab`保存了这个可执行文件或者是`.so`中的所有符号信息。 `.dynsym` 是 `.symtab` 的一个子集，实际代码运行中其实只需要`.dynsym`.
 #####  获取符号表
 `Symbol Table` 包含 `.symtab` 和 `.dynsym`
@@ -72,10 +88,11 @@ readelf -S <filename>
 ```Bash
 readelf -s <path/for/elf>
 ```
-##### 获取动态符号表
+##### 获取 动态符号表
 `.dynsym`，动态链接才需要的符号表，即可包括对外提供调用的符号，也包括需要外面提供实现的符号。
 ```Bash
 readelf --dyn-syms <path/for/elf>
+readelf -sD <path/for/elf>
 ```
 `.dynsym`节保存在`text`段中。其保存了从共享库导入的动态符号表。
 `.dynsym`表包含动态链接的符号，例如`libc`函数，`.symtab`表包含源代码中定义的所有符号（包括`.dynsym`表中的符号）。
@@ -110,6 +127,7 @@ readelf -p .dynstr your_executable_or_library
 里面的内容都是字符串，这个字符串表`.dynstr`是给符号表(`.dynsym`)使用的。
 
 这将显示`.dynstr`节中的内容，包括存储在其中的所有字符串。这些字符串通常是动态链接器在运行时需要解析的符号名称。
+
 ### `.strtab`
 `.strtab`节保存的符号字符串表，表中的内容会被`.symtab`的`ElfN_Sym`结构中的`st_name`引用, 他的内容格式实际上和`.dynstr`是一样的，这里不再具体说明，感兴趣的同学可以自行搜索两者之间的差异。
 ### `.text`
@@ -125,20 +143,78 @@ objdump -s -d <filename>
 objdump -x -s -d <filename>
 ```
 
-### 十六进制显示section的内容
+### '.interp'
+动态链接的ELF可执行文件中，有一个'.interp'段，用于保存可执行文件所需要的动态链接器的路径字符串。使用'objdump'查看'.interp'的内容：
 ```Bash
-# 十六进制显示 section 的内容, 可以使用 section 编号或者名字
-# readelf -x --hex-dump=<number|name>
-readelf -x 29 /bin/grep  # 查看 .shstrtab section, 编号 29
-readelf -x .data /bin/grep  # 查看 .data section
+objdump -s a.out
+
+a.out:     file format elf32-i386
+
+Contents of section .interp:
+ 8048114 2f6c6962 2f6c642d 6c696e75 782e736f  /lib/ld-linux.so
+ 8048124 2e3200                                     .2.
 ```
-### 字符串方式显示section的内容
+### '.dynamic'
+动态链接ELF中最重要的结构应该是.dynamic段，它保存了动态链接器所需要的基本信息，比如依赖于哪些共享对象、动态链接符号表的位置、动态链接重定位表的位置、共享对象初始化代码的地址等。
+.dynamic段可以看成是动态链接下ELF文件的“文件头”。使用readelf查看“.dynamic”段的内容：
 ```Bash
-# 字符串方式显示 section 的内容, 可以使用 section 编号或者名字
-# readelf -p --string-dump=<number|name>
-readelf -p 29 /bin/grep  # 查看 .shstrtab section, 编号 29
-readelf -p .data /bin/grep  # 查看 .data section
+readelf -d Lib.so
+ynamic section at offset 0x4f4 contains 21 entries:
+  Tag        Type                     Name/Value
+ 0x00000001 (NEEDED)                  Shared library: [libc.so.6]
+ 0x0000000c (INIT)                    0x310
+ 0x0000000d (FINI)                    0x4a4
+ 0x00000004 (HASH)                    0xb4
+ 0x6ffffef5 (GNU_HASH)                0xf8
+ 0x00000005 (STRTAB)                  0x1f4
+ 0x00000006 (SYMTAB)                  0x134
+ 0x0000000a (STRSZ)                   139 (bytes)
+ 0x0000000b (SYMENT)                  16 (bytes)
+ 0x00000003 (PLTGOT)                  0x15c8
+ 0x00000002 (PLTRELSZ)                32 (bytes)
+ 0x00000014 (PLTREL)                  REL
+ 0x00000017 (JMPREL)                  0x2f0
+ 0x00000011 (REL)                     0x2c8
+ 0x00000012 (RELSZ)                   40 (bytes)
+ 0x00000013 (RELENT)                  8 (bytes)
+ 0x6ffffffe (VERNEED)                 0x298
+ 0x6fffffff (VERNEEDNUM)              1
+ 0x6ffffff0 (VERSYM)                  0x280
+ 0x6ffffffa (RELCOUNT)                2
+ 0x00000000 (NULL)                    0x0
+ 
+//常见类型值
+#define DT_NULL         0               /* Marks end of dynamic section */
+#define DT_NEEDED       1               /* Name of needed library */
+#define DT_HASH         4               /* Address of symbol hash table */
+#define DT_STRTAB       5               /* Address of string table */
+#define DT_SYMTAB       6               /* Address of symbol table */
+#define DT_RELA         7               /* Address of Rela relocs */
+#define DT_RELAENT      9               /* Size of one Rela reloc */
+#define DT_STRSZ        10              /* Size of string table */
+#define DT_INIT         12              /* Address of init function */
+#define DT_FINI         13              /* Address of termination function */
+#define DT_SONAME       14              /* Name of shared object */
+#define DT_RPATH        15              /* Library search path (deprecated) */
+#define DT_REL          17              /* Address of Rel relocs */
+#define DT_RELENT       19              /* Size of one Rel reloc */ 
 ```
+Linux还提供了ldd命令查看一个程序主模块或一个共享库依赖于哪些共享库：
+```Bash
+$ ldd Program1
+linux-gate.so.1 =>  (0xffffe000)
+./Lib.so (0xb7f62000)
+libc.so.6 => /lib/tls/i686/cmov/libc.so.6 (0xb7e0d000)
+/lib/ld-linux.so.2 (0xb7f66000)
+```
+
+### 动态链接重定位表
+在动态链接中，导入符号的地址在运行时才确定，所以需要在运行时将这些导入符号的引用修正，即需要重定位。不论是可执行文件还是共享对象，不管是否使用PIC机制，只要有导入符号，就需要重定位。对于使用PIC技术的可执行文件或共享对象来说，虽然它们的代码段不需要重定位（因为地址无关），但是数据段还包含了绝对地址的引用，因为代码段中绝对地址相关的部分被分离了出来，变成了GOT，而GOT实际上是数据段的一部分。除了GOT以外，数据段还可能包含绝对地址引用。
+动态链接的文件中，重定位表叫做.rel.dyn和.rel.plt。.rel.dyn是对数据引用的修正，它所修正的位置位于.got以及数据段；而.rel.plt是对函数引用的修正，它所修正的位置位于.got.plt。使用readelf查看一个动态链接的文件的重定位表
+```Bash
+readelf -r Lib.so
+```
+如果某个ELF文件是以PIC模式编译的（动态链接的可执行文件一般是PIC的），并调用了一个外部函数bar，则bar会出现在“.rel.plt”中；而如果不是以PIC模式编译，则bar将出现在“.rel.dyn”中。
 
 ### `.rel.text`
 
