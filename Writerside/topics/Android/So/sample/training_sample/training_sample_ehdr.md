@@ -60,7 +60,6 @@ xxd -u -a -g 1 -s 0 -l 64 training-sample
 ## 字符串表表项
 ### 获取字符串表表项地址
 0x1C 0x00 这个表项，也就是第 28 个表项。
-![e_ident.png](e_ident.png)
 ```Bash
  readelf -S training-sample        
 There are 29 section headers, starting at offset 0x1b10:
@@ -99,6 +98,17 @@ https://jisuan5.com/hexadecimal-to-decimal/
 ### 第 28 个表项的开始地址
 注意这里的计算都是从 0 开始的，因此第 28 个表项的开始地址就是：6928 + （28 * 64） = 6928 + 1792 = 8720，也就是说用来描述字符串表这个 Section 的表项，位于 ELF 文件的 8720 字节的位置。
 ### 获取字符串表项section
+|  成员   | 大小（32位） | 大小（64位） |
+|:-----:|:-------:|:-------:|
+| Word  |    4    |    4    |
+| Xword |    4    |    8    |
+| Addr  |    4    |    8    |
+|  Off  |    4    |    8    |
+
+Elf64_Word  4 个字节
+Elf64_Xword 8个字节
+Elf64_Addr 8个字节
+Elf64_Off 8个字节
 ```C
 typedef struct {
 Elf64_Word    sh_name;        // 节区名字在字符串表中的偏移量
@@ -219,10 +229,9 @@ String dump of section '.strtab':
 #define SHF_RO_AFTER_INIT    0x00200000
 #define SHF_MASKPROC        0xf0000000  //所有被此值所覆盖的位都是保留做特殊处理器扩展用的。
 ```
-+ sh_link与sh_info：如果节的类型是与链接相关的（无论是动态链接还是静态链接），如重定位表、符号表等，则sh_link、sh_info两个成员所包含的意义如下所示。其他类型的节，这两个成员没有意义。
 
-sh_offset: 表示这个 Section，在 ELF 文件中的偏移量。0x0000000000001a0f = 6671，意思是字符串表这个 Section 的内容，从 ELF 文件的 6671 个字节处开始;
-sh_size：表示这个 Section 的长度。0x00000000000000fe = 254 个字节，意思是字符串表这个 Section 的内容，一共有 254 个字节。
++ sh_offset: 表示这个 Section，在 ELF 文件中的偏移量。0x0000000000001a0f = 6671，意思是字符串表这个 Section 的内容，从 ELF 文件的 6671 个字节处开始;
++ sh_size：表示这个 Section 的长度。0x00000000000000fe = 254 个字节，意思是字符串表这个 Section 的内容，一共有 254 个字节。
 
 ### 验证正确性
 还记得刚才我们使用 readelf 工具，读取到字符串表 Section 在 ELF 文件中的偏移地址是 0x00001a0f，长度是 0x00000000000000fe 个字节吗？
