@@ -1,0 +1,2 @@
+image::test.jpg[]
+image::test.webp[]
