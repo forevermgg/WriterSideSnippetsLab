@@ -1,4 +1,5 @@
 ## strings 搜索so字符串工具
+
 ```bash
 ❯ strings -a libc++_shared.so | grep use_face
 _ZNKSt6__ndk16locale9use_facetERNS0_2idE
