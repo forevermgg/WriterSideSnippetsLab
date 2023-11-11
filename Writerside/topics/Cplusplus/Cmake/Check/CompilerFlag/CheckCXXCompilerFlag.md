@@ -12,7 +12,7 @@ else()
   message("不支持 -std=c++11 编译器标志")
 endif()
 ```
-在这个例子中，CheckCXXCompilerFlag 函数被用来检查是否可以在 C++ 编译器中启用 -std=c++11 标志。结果存储在变量 SUPPORTS_CXX11 中。如果该标志可用，则打印消息 "支持 -std=c++11 编译器标志"；否则，打印消息 "不支持 -std=c++11 编译器标志"。
+在这个例子中，CheckCXXCompilerFlag用来检查函数是否可以在 C++ 编译器中启用 -std=c++11 标志。结果存储在变量 SUPPORTS_CXX11中。如果该标志可用，则打印消息 "支持 -std=c++11 编译器标志"；否则，打印消息 "不支持 -std=c++11 编译器标志"。
 这个函数通常在 CMake 脚本中使用，以便根据编译器的支持情况进行条件编译或选择不同的编译选项。
 ### leveldb check check_cxx_compiler_flag
 https://github.com/google/leveldb/blob/main/CMakeLists.txt
