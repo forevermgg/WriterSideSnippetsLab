@@ -233,7 +233,6 @@ readelf -S test | grep 000000403330 -B 2
 [22] .dynamic          DYNAMIC          0000000000403190  00002190
        00000000000001a0  0000000000000010  WA       7     0     8
 [23] .got              PROGBITS         0000000000403330  00002330
-
 ```
 ### 对比分析
 以 printf 函数为例，分析 PLT 和 GOT 的工作过程。
@@ -243,7 +242,7 @@ objdump --disassemble --full-contents --section=.text test
 
 401176:       e8 c5 fe ff ff          call   401040 <printf@plt>
 ```
-+ 比较 看到 main 函数调用printf函数的指令是 callq 0x401040，0x401040正是printf函数的PLT表项的地址。反汇编结果里的403350 <printf@GLIBC_2.2.5>也明确地指出了这一点。
++ 比较 看到 main 函数调用printf函数的指令是 call 0x401040，0x401040正是printf函数的PLT表项的地址。反汇编结果里的403350 <printf@GLIBC_2.2.5>也明确地指出了这一点。
 + .plt
 ```bash
 objdump --disassemble --full-contents --section=.plt test
@@ -254,20 +253,6 @@ objdump --disassemble --full-contents --section=.plt test
   40104b:       e9 e0 ff ff ff          jmp    401030 <_init+0x30>
 ```
 它跳转到了 0x230a(%rip) 指向的地址，0x230a(%rip) 的内容在反汇编结果的注释中给出了，是 0x403350。0x403350正是printf函数的GOT表项的地址，其内容是 ？？？
-+ .rela.plt
-```bash
-readelf --relocs test
-
-Relocation section '.rela.dyn' at offset 0x4a8 contains 1 entry:
-  Offset          Info           Type           Sym. Value    Sym. Name + Addend
-000000403330  000300000006 R_X86_64_GLOB_DAT 0000000000000000 __gmon_start__ + 0
-
-Relocation section '.rela.plt' at offset 0x4c0 contains 3 entries:
-  Offset          Info           Type           Sym. Value    Sym. Name + Addend
-000000403350  000100000007 R_X86_64_JUMP_SLO 0000000000000000 printf@GLIBC_2.2.5 + 0
-000000403358  000200000007 R_X86_64_JUMP_SLO 0000000000000000 __libc_start_main@GLIBC_2.2.5 + 0
-000000403360  000400000007 R_X86_64_JUMP_SLO 0000000000000000 __isoc99_scanf@GLIBC_2.7 + 0
-```
 + .got.plt
 ```bash
 objdump --full-contents --section=.got.plt test
