@@ -1,6 +1,15 @@
 # macos-cross-toolchains
 ![macos-cross-toolchains](https://github.com/messense/homebrew-macos-cross-toolchains)
 
+## is_not_linux_gcc
+```bash
+gcc -v
+Apple clang version 15.0.0 (clang-1500.0.40.1)
+Target: arm64-apple-darwin23.0.0
+Thread model: posix
+InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+```
+
 ## install using Homebrew:
 ```Bash
 brew tap messense/macos-cross-toolchains
