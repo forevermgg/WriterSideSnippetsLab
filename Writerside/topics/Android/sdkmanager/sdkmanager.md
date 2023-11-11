@@ -14,7 +14,9 @@ Caused by: java.lang.ClassNotFoundException: javax.xml.bind.annotation.XmlSchema
 	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521)
 	... 5 more
 ```
+
 sdkmanager 使用的lib目录
+
 ```Bash
 ❯ pwd
 /Users/centforever/Library/Android/sdk/tools/lib
@@ -62,11 +64,13 @@ httpmime-4.1.jar                     x86
 intellij-core-26.0.0-dev.jar         x86_64
 j2objc-annotations-1.1.jar
 ```
+
 在 /Users/centforever/Library/Android/sdk/tools/lib 添加
 activation-1.1.1.jar
 jaxb-api-2.3.1.jar
 jaxb-core-2.3.0.1.jar
 jaxb-impl-2.3.2.jar
+
 ```Bash
 ❯ ls -lta
 total 110520
@@ -77,15 +81,19 @@ drwxr-xr-x  90 centforever  staff      2880 11  4 11:27 .
 -rw-r--r--@  1 centforever  staff    128076 11  4 11:25 jaxb-api-2.3.1.jar
 -rw-r--r--@  1 centforever  staff     69409 11  4 11:20 activation-1.1.1.jar
 ```
+
 修改 sdkmanager
+
 ```Bash
 原来
 CLASSPATH=$APP_HOME/lib/dvlib-26.0.0-dev.jar:$APP_HOME/lib/jimfs-1.1.jar:$APP_HOME/lib/jsr305-1.3.9.jar:$APP_HOME/lib/repository-26.0.0-dev.jar:$APP_HOME/lib/j2objc-annotations-1.1.jar:$APP_HOME/lib/layoutlib-api-26.0.0-dev.jar:$APP_HOME/lib/gson-2.3.jar:$APP_HOME/lib/httpcore-4.2.5.jar:$APP_HOME/lib/commons-logging-1.1.1.jar:$APP_HOME/lib/commons-compress-1.12.jar:$APP_HOME/lib/annotations-26.0.0-dev.jar:$APP_HOME/lib/error_prone_annotations-2.0.18.jar:$APP_HOME/lib/animal-sniffer-annotations-1.14.jar:$APP_HOME/lib/httpclient-4.2.6.jar:$APP_HOME/lib/commons-codec-1.6.jar:$APP_HOME/lib/common-26.0.0-dev.jar:$APP_HOME/lib/kxml2-2.3.0.jar:$APP_HOME/lib/httpmime-4.1.jar:$APP_HOME/lib/annotations-12.0.jar:$APP_HOME/lib/sdklib-26.0.0-dev.jar:$APP_HOME/lib/guava-22.0.jar
 后面新增
 :$APP_HOME/lib/activation-1.1.1.jar:$APP_HOME/lib/jaxb-api-2.3.1.jar:$APP_HOME/lib/jaxb-core-2.3.0.1.jar:$APP_HOME/lib/jaxb-impl-2.3.2.jar
 ```
-保存 
+
+保存
 执行
+
 ```Bash
 Available Updates:
   ID                                             | Installed | Available
@@ -101,6 +109,7 @@ Available Updates:
 ```
 
 ## 推荐
+
 ```Bash
 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --list
 ```

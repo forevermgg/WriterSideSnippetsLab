@@ -1,11 +1,14 @@
 ## Check out Git submodules.
+
 ```CMake
 if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.gitmodules")
 execute_process (COMMAND git submodule update --init --recursive
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 ```
+
 .gitmodules
+
 ```text
 [submodule "third_party/re2"]
 	path = third_party/re2
@@ -31,7 +34,9 @@ endif()
 ```
 
 ## 使用
+
 https://github.com/google/bloaty/blob/main/CMakeLists.txt
+
 ```CMake
 add_subdirectory(third_party/re2)
 include_directories(third_party/re2)
