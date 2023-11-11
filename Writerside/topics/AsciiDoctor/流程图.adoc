@@ -1,0 +1,15 @@
+[plantuml,svg]
+----
+@startuml
+start
+:Your process step 1;
+:Your process step 2;
+if (Some condition) then (yes)
+  :Process step when condition is true;
+else (no)
+  :Process step when condition is false;
+endif
+:Your final process step;
+stop
+@enduml
+----
