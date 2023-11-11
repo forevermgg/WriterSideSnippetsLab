@@ -68,7 +68,7 @@ gcc version 11.2.0 (GCC)
 ### 源代码
 ```C
 #include <stdio.h>
-int print_hello() {
+v print_hello() {
   printf("hello PLT and GOT\n");
 }
 
