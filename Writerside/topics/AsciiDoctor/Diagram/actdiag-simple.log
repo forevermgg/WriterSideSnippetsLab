@@ -1,0 +1,7 @@
+❯ actdiag actdiag-simple.diag
+ERROR: 'FreeTypeFont' object has no attribute 'getsize'
+
+
+pip install Pillow==9.5.0
+
+
