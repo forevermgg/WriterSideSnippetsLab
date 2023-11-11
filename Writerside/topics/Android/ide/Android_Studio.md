@@ -1,4 +1,5 @@
 ## ps aux | grep -i studio
+
 ```bash
 ❯ ps aux | grep -i studio
 centforever      33346   0.8  1.7 413732304 282944   ??  Ss    2:32下午   6:11.43 /Users/centforever/Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-opens=java.base/java.nio.charset=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED -Xmx2048m -Dfile.encoding=UTF-8 -Duser.country=CN -Duser.language=zh -Duser.variant -cp /Users/centforever/.gradle/wrapper/dists/gradle-8.0-bin/ca5e32bp14vu59qr306oxotwh/gradle-8.0/lib/gradle-launcher-8.0.jar org.gradle.launcher.daemon.bootstrap.GradleDaemon 8.0

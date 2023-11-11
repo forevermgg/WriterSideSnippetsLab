@@ -1,4 +1,4 @@
-[actdiag="/opt/homebrew/bin/actdiag", format="png"]
+[actdiag="/opt/homebrew/bin/actdiag",format="png"]
 ....
 actdiag {
   write -> convert -> image
