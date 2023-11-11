@@ -1,2 +1,2 @@
-image::test.jpg[]
-image::test.webp[]
+image::images/test.jpg[]
+image::images/test.webp[]
