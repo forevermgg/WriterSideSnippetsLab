@@ -1,6 +1,6 @@
 # PLT&GOT
-
-在程序加载时，通过`.rel` `section`，让编译器基于重定位信息计算出调用函数在程序中的实际位置的加载方式，一般被称为静态链接，如果程序使用了外部的库函数时，整个库函数都会被直接编译到程序中。
+## 静态链接&&动态链接
+在程序加载时，通过`.rel` `section`，让编译器基于重定位信息计算出调用函数在程序中的实际位置的加载方式，一般被称为`静态链接`，如果程序使用了外部的库函数时，整个库函数都会被直接编译到程序中。
 
 可以思考一下它的缺点，以及对应的改正方法：
 
@@ -8,11 +8,11 @@
   中的函数，那么`glibc`就会被封装进`500`个程序中。
 + 可不可以将多个程序都会使用的库单独剥离出来，同时在源程序和库之间建立某种联系，确保源程序在执行的时候可以调用到库函数？
 
-动态链接技术的提出就是为了解决这个问题，在程序运行时，将共享库和程序本身进行链接，同时，内存里的程序可以共享同一个库文件，这样既节省了硬盘存储空间，同样节省了内存空间。
+`动态链接`技术的提出就是为了解决这个问题，在程序运行时，将共享库和程序本身进行链接，同时，内存里的程序可以共享同一个库文件，这样既节省了硬盘存储空间，同样节省了内存空间。
 
 静态链接与动态链接主要区别如下图所示:
 
-![静态链接与动态链接](../静态链接与动态链接.png)
+![静态链接与动态链接](./静态链接与动态链接.png)
 
 为了做到动态编译，首先需要生成位置无关代码（`Posistion-Independent Code`,`PIC`）,通过`PIC`一个共享库可以被多个进程共享。
 
@@ -22,15 +22,15 @@
 + 一段用来加载外部函数的代码
 
 因为数据段和代码段之间的距离是一个运行时常量，他们之间的偏移是固定的，于是这里就有了全局偏移表（`GOT`，`Global Offset Table`
-），它位于`数据段`的`开始`，用于`保存全局变量`以及`库函数`（`外部函数`）的`引用`，每一条8个字节，在`程序``加载时`
-会`完成``重定位`，并`填入``符号`的`绝对地址`。`GOT`一般被拆成了`两`个`section`，`不需要延迟绑定`，用于`存储全局变量`
+），它位于`数据段`的`开始`，用于`保存全局变量`以及`库函数`（`外部函数`）的`引用`，每一条8个字节，在`程序加载时`
+会`完成重定位`，并`填入符号`的`绝对地址`。`GOT`一般被拆成了`两`个`section`，`不需要延迟绑定`，用于`存储全局变量`
 ，加载到内存中只需要被读取的`.got`，以及为了存储库函数需要延迟绑定写入的`.got.plt`。
 
 而同时为了完成延迟绑定还需要将外部函数的值在运行时写入`.got.plt`
 ，因此又引入了过程链接表（`PLT`,`Procedure Liknage Table`）。`PLT`是由`代码片段`组成，用于`将地址无关函数`转移到`绝对地址`
 。每一个`被调用的库函数`，都会映射到一组`PLT`和`GOT`。如下图所示：
 
-![PLT&GOT](PLT&GOT.png)
+![PLT&GOT](./PLT&GOT.png)
 
 `.got.plt`用来保存函数引用的地址，即把外部函数的引用分离到`.got.plt`中。另外“.got.plt”的前三项是有特殊意义的：
 
@@ -47,45 +47,53 @@
 ### 环境
 ```bash
 ❯ aarch64-linux-gnu-cc -v
-Using built-in specs.
-COLLECT_GCC=aarch64-linux-gnu-cc
-COLLECT_LTO_WRAPPER=/opt/homebrew/Cellar/aarch64-unknown-linux-gnu/11.2.0_1/toolchain/bin/../libexec/gcc/aarch64-unknown-linux-gnu/11.2.0/lto-wrapper
-Target: aarch64-unknown-linux-gnu
-Configured with: /Volumes/build/.build/aarch64-unknown-linux-gnu/src/gcc/configure --build=aarch64-build_apple-darwin21.6.0 --host=aarch64-build_apple-darwin21.6.0 --target=aarch64-unknown-linux-gnu --prefix=/Volumes/tools/aarch64-unknown-linux-gnu --exec_prefix=/Volumes/tools/aarch64-unknown-linux-gnu --with-sysroot=/Volumes/tools/aarch64-unknown-linux-gnu/aarch64-unknown-linux-gnu/sysroot --enable-languages=c,c++,fortran --enable-__cxa_atexit --disable-libmudflap --enable-libgomp --enable-libssp --enable-libquadmath --enable-libquadmath-support --enable-libsanitizer --disable-libmpx --disable-libstdcxx-verbose --with-gmp=/Volumes/build/.build/aarch64-unknown-linux-gnu/buildtools --with-mpfr=/Volumes/build/.build/aarch64-unknown-linux-gnu/buildtools --with-mpc=/Volumes/build/.build/aarch64-unknown-linux-gnu/buildtools --with-isl=/Volumes/build/.build/aarch64-unknown-linux-gnu/buildtools --enable-lto --enable-threads=posix --enable-target-optspace --with-linker-hash-style=both --enable-plugin --enable-gold --disable-nls --disable-multilib --with-local-prefix=/Volumes/tools/aarch64-unknown-linux-gnu/aarch64-unknown-linux-gnu/sysroot --enable-long-long
-Thread model: posix
-Supported LTO compression algorithms: zlib
-gcc version 11.2.0 (GCC)
 ❯ x86_64-linux-gnu-cc -v
-Using built-in specs.
-COLLECT_GCC=x86_64-linux-gnu-cc
-COLLECT_LTO_WRAPPER=/opt/homebrew/Cellar/x86_64-unknown-linux-gnu/11.2.0_1/toolchain/bin/../libexec/gcc/x86_64-unknown-linux-gnu/11.2.0/lto-wrapper
-Target: x86_64-unknown-linux-gnu
-Configured with: /Volumes/build/.build/x86_64-unknown-linux-gnu/src/gcc/configure --build=aarch64-build_apple-darwin21.6.0 --host=aarch64-build_apple-darwin21.6.0 --target=x86_64-unknown-linux-gnu --prefix=/Volumes/tools/x86_64-unknown-linux-gnu --exec_prefix=/Volumes/tools/x86_64-unknown-linux-gnu --with-sysroot=/Volumes/tools/x86_64-unknown-linux-gnu/x86_64-unknown-linux-gnu/sysroot --enable-languages=c,c++,fortran --enable-__cxa_atexit --disable-libmudflap --enable-libgomp --enable-libssp --enable-libquadmath --enable-libquadmath-support --enable-libsanitizer --enable-libmpx --disable-libstdcxx-verbose --with-gmp=/Volumes/build/.build/x86_64-unknown-linux-gnu/buildtools --with-mpfr=/Volumes/build/.build/x86_64-unknown-linux-gnu/buildtools --with-mpc=/Volumes/build/.build/x86_64-unknown-linux-gnu/buildtools --with-isl=/Volumes/build/.build/x86_64-unknown-linux-gnu/buildtools --enable-lto --enable-threads=posix --enable-target-optspace --with-linker-hash-style=both --enable-plugin --enable-gold --disable-nls --disable-multilib --with-local-prefix=/Volumes/tools/x86_64-unknown-linux-gnu/x86_64-unknown-linux-gnu/sysroot --enable-long-long
-Thread model: posix
-Supported LTO compression algorithms: zlib
-gcc version 11.2.0 (GCC)
 ```
 ### 源代码
 ```C
 #include <stdio.h>
-v print_hello() {
-  printf("hello PLT and GOT\n");
-}
 
 int main() {
-  print_hello();
-  return 0;
+    int integer;
+    printf("Enter an integer: ");
+    scanf("%d", &integer);  
+    printf("Number = %d\n", integer);
+    return 0;
 }
 ```
 ### 编译
+#### 简单编译
 ```bash
-x86_64-linux-gnu-gcc  main.c -o test -save-temps -g -Wl,-z,lazy
+x86_64-linux-gnu-gcc main.c -z norelro -fno-stack-protector -o test
+```
+简单起见，使用`gcc`选项`-z norelro`关闭了`RELRO`，`-fno-stack-protector`关闭了`CANNARY`。
+##### checksec test
+`Checksec`是一个`shell`脚本，可用于检查`Linux`中二进制文件的属性。这可用于检查多种缓解技术，例如`PIE`、`RELRO`、`NoExecute`、`Stack Canaries`、`ASLR`等。`Checksec`可以检查`Linux`内核，以查看某些安全功能是否已打开。将源代码编译为二进制文件时，可以在编译时启用或禁用一些安全功能，但是，默认情况下，在编译应用程序时，这些功能中的大多数都不会打开，必须在编译时进行设置。
++ `NX`：`-z execstack`/`-z noexecstack` (关闭 / 开启)
++ `Canary`：`-fno-stack-protector`/`-fstack-protector`/`-fstack-protector-all`(关闭 / 开启 / 全开启)
++ `PIE`：`-no-pie`/`-pie` (关闭 / 开启)
++ `RELRO`：`-z norelro` /`-z lazy`/`-z now` (关闭 / 部分开启 / 完全开启)
+```bash
+brew install pwntools
+
+checksec test
+[*] './test'
+    Arch:     amd64-64-little
+    RELRO:    No RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x400000)
+```
+##### Run ELF 64-bit LSB executable on Mac？？？
+https://github.com/karton/karton
+#### 延迟绑定
+```bash
+x86_64-linux-gnu-gcc main.c -o test -save-temps -g -Wl,-z,lazy
 ```
 + -save-temps 会保存所有的中间输出结果。
 + -Wl,-z,lazy强制开启延迟绑定。
 + -g 方便调试。
 ### 汇编代码
-对比print_hello && main函数
 .o文件
 ```bash
 objdump -d test-main.o
@@ -93,63 +101,196 @@ objdump -d test-main.o
 可执行文件test
 ```bash
 objdump -d test
+
+objdump --disassemble --full-contents --section=.text test
+
+0000000000401164 <main>:
+  401164:       55                      push   %rbp
+  401165:       48 89 e5                mov    %rsp,%rbp
+  401168:       48 83 ec 10             sub    $0x10,%rsp
+  40116c:       bf 04 20 40 00          mov    $0x402004,%edi
+  401171:       b8 00 00 00 00          mov    $0x0,%eax
+  401176:       e8 c5 fe ff ff          call   401040 <printf@plt>
+  40117b:       48 8d 45 fc             lea    -0x4(%rbp),%rax
+  40117f:       48 89 c6                mov    %rax,%rsi
+  401182:       bf 17 20 40 00          mov    $0x402017,%edi
+  401187:       b8 00 00 00 00          mov    $0x0,%eax
+  40118c:       e8 cf fe ff ff          call   401060 <__isoc99_scanf@plt>
+  401191:       8b 45 fc                mov    -0x4(%rbp),%eax
+  401194:       89 c6                   mov    %eax,%esi
+  401196:       bf 1a 20 40 00          mov    $0x40201a,%edi
+  40119b:       b8 00 00 00 00          mov    $0x0,%eax
+  4011a0:       e8 9b fe ff ff          call   401040 <printf@plt>
+  4011a5:       b8 00 00 00 00          mov    $0x0,%eax
+  4011aa:       c9                      leave
+  4011ab:       c3                      ret
+  4011ac:       0f 1f 40 00             nopl   0x0(%rax)
 ```
-### Relocate
-对比目标代码和最终代码的反汇编代码，可以看到，在print_hello函数中，调用call函数时对应内容是有经过重定向
-## 全局偏移表（Global Offset Table，GOT）
+### .plt|.got
+```bash
+readelf -S test | egrep  '.plt|.got'
+  [11] .rela.plt         RELA             00000000004004c0  000004c0
+  [13] .plt              PROGBITS         0000000000401030  00001030
+  [14] .plt.got          PROGBITS         0000000000401070  00001070
+  [23] .got              PROGBITS         0000000000403330  00002330
+  [24] .got.plt          PROGBITS         0000000000403338  00002338
+```
+### .plt
+PLT 中的每一项都是一小段代码，所以使用 objdump 命令查看 .plt 段的内容时添加反汇编参数。选项 --disassemble（可简写为 -d）的含义是 Display assembler contents of executable sections，--full-contents（可简写为 -s）的含义是 Display the full contents of all sections requested，--section（可简写为 -j）的含义是 Display information only for section name。
+```bash
+objdump --disassemble --full-contents --section=.plt test
 
-全局偏移表（Global Offset Table，GOT）是用于支持位置无关代码（Position Independent Code，PIC）的一种数据结构。GOT 主要用于动态链接库（如
-.so 文件）和共享库中，以解决全局变量和函数地址的引用问题。
 
-在动态链接库中，全局变量和函数的实际地址在编译时是未知的，因为库可以在程序运行时被加载到任意内存地址。为了解决这个问题，编译器和链接器会使用相对地址（而不是绝对地址）来引用全局变量和函数。这些相对地址是相对于库在内存中的基地址（Base
-Address）的偏移量。
+test:     file format elf64-x86-64
 
-全局偏移表（GOT）就是用于存储这些相对地址的数据结构。每个动态链接库和共享库都有一个 GOT。在程序运行时，动态链接器（如
-ld.so）会根据库的实际加载地址计算全局变量和函数的绝对地址，并将这些地址填充到 GOT 中。然后，库中的代码可以通过访问 GOT
-来间接引用全局变量和函数。
+Contents of section .plt:
+ 401030 ff350a23 0000ff25 0c230000 0f1f4000  .5.#...%.#....@.
+ 401040 ff250a23 00006800 000000e9 e0ffffff  .%.#..h.........
+ 401050 ff250223 00006801 000000e9 d0ffffff  .%.#..h.........
+ 401060 ff25fa22 00006802 000000e9 c0ffffff  .%."..h.........
 
-GOT 的主要优点是它允许动态链接库和共享库在不同程序中共享相同的代码段（Text
-Segment）。这是因为库中的代码可以在不同的内存地址运行，而不需要对代码进行重定位。这样可以节省内存并减少程序启动时间。
+Disassembly of section .plt:
 
-总结一下，全局偏移表（GOT）是一种用于支持位置无关代码（PIC）的数据结构，它存储了动态链接库和共享库中全局变量和函数的相对地址。在程序运行时，动态链接器会根据库的实际加载地址填充
-GOT，以便库中的代码可以间接引用全局变量和函数。
+0000000000401030 <printf@plt-0x10>:
+  401030:       ff 35 0a 23 00 00       push   0x230a(%rip)        # 403340 <_GLOBAL_OFFSET_TABLE_+0x8>
+  401036:       ff 25 0c 23 00 00       jmp    *0x230c(%rip)        # 403348 <_GLOBAL_OFFSET_TABLE_+0x10>
+  40103c:       0f 1f 40 00             nopl   0x0(%rax)
 
-### GOT如何做到指令的地址无关性？
+0000000000401040 <printf@plt>:
+  401040:       ff 25 0a 23 00 00       jmp    *0x230a(%rip)        # 403350 <printf@GLIBC_2.2.5>
+  401046:       68 00 00 00 00          push   $0x0
+  40104b:       e9 e0 ff ff ff          jmp    401030 <_init+0x30>
 
-GOT（全局偏移表）通过间接寻址实现了指令的地址无关性。以下是GOT如何做到地址无关性的详细解释：
+0000000000401050 <__libc_start_main@plt>:
+  401050:       ff 25 02 23 00 00       jmp    *0x2302(%rip)        # 403358 <__libc_start_main@GLIBC_2.2.5>
+  401056:       68 01 00 00 00          push   $0x1
+  40105b:       e9 d0 ff ff ff          jmp    401030 <_init+0x30>
 
-+ 编译和链接：在编译和链接阶段，编译器和链接器会为位置无关代码（PIC）生成特殊的指令序列来访问全局变量和函数。这些指令序列使用相对于库基地址（Base
-  Address）的偏移量（而不是绝对地址）来引用全局变量和函数。这些偏移量在GOT（全局偏移表）中存储。
+0000000000401060 <__isoc99_scanf@plt>:
+  401060:       ff 25 fa 22 00 00       jmp    *0x22fa(%rip)        # 403360 <__isoc99_scanf@GLIBC_2.7>
+  401066:       68 02 00 00 00          push   $0x2
+  40106b:       e9 c0 ff ff ff          jmp    401030 <_init+0x30>
+```
+### .got.plt
+GOT 的每一项都是一个地址，因此不用进行反汇编。同样使用 objdump 命令查看。
+这是我们常说的GOT, 即Global Offset Table, 全局偏移表. 这是链接器在执行链接时
+实际上要填充的部分, 保存了所有外部符号的地址信息.
+不过值得注意的是, 除了每个函数占用一个GOT表项外，GOT表项还保留了
+3个公共表项, 每项32位(4个字节), 保存在前三个位置, 分别是:
+```bash
+objdump --full-contents --section=.got.plt test
 
-+ 间接寻址：GOT中的条目包含全局变量和函数的地址。程序中的代码不直接引用这些地址，而是通过GOT进行间接寻址。这意味着，只要GOT中的地址得到正确填充，程序中的代码就可以在任意内存地址运行，而不需要进行重定位。
+test:     file format elf64-x86-64
 
-+ 动态链接器：在程序运行时，动态链接器（如ld.so）负责将库加载到内存并计算库的实际基地址。然后，动态链接器根据库的基地址和GOT中的偏移量计算全局变量和函数的实际地址，并将这些地址填充到GOT中。
+Contents of section .got.plt:
+ 403338 90314000 00000000 00000000 00000000  .1@.............
+ 403348 00000000 00000000 46104000 00000000  ........F.@.....
+ 403358 56104000 00000000 66104000 00000000  V.@.....f.@.....
+```
++ 第0项.dynamic 段地址
 
-+ 运行时访问：当程序运行时，代码通过访问GOT中的地址来间接引用全局变量和函数。由于GOT已经根据库的实际加载地址进行了填充，所以代码可以在不同的内存地址运行，而不受影响。
++ got[0]: 本ELF动态段(.dynamic段)的装载地址
 
-通过这种方式，GOT实现了指令的地址无关性。它允许动态链接库和共享库在不同程序中共享相同的代码段（Text
-Segment），从而节省内存并减少程序启动时间。
++ 第1项.本镜像的link_map数据结构地址，未运行无法确定，故以全 0 填充
 
-### GOT和PLT之前的区别
++ got[1](http://www.cs.stevens.edu/~jschauma/810/elf.html): 本ELF的`link_map`数据结构描述符地址
+  ```
+  struct link_map
+  {
+     /* Shared library's load address. */
+     ElfW(Addr) l_addr;                 
+     /* Pointer to library's name in the string table. */                                 
+     char *l_name;    
+     /* 
+          Dynamic section of the shared object.
+          Includes dynamic linking info etc.
+          Not interesting to us.  
+     */                   
+     ElfW(Dyn) *l_ld;   
+     /* Pointer to previous and next link_map node. */                 
+     struct link_map *l_next, *l_prev;   
+  };
+  ```
++ 第2项._dl_runtime_resolve 函数地址，未运行无法确定，故以全 0 填充
 
-GOT（全局偏移表，Global Offset Table）和 PLT（过程链接表，Procedure Linkage Table）都是用于支持位置无关代码（Position
-Independent Code，PIC）的数据结构，它们在动态链接库和共享库中起到重要作用。尽管它们有一定的关联，但它们的主要目的和用途有所不同。
++ got[2](http://www.cs.dartmouth.edu/~sergey/cs108/dyn-linking-with-gdb.txt): `_dl_runtime_resolve`函数的地址
 
-GOT（全局偏移表）：
++ 第n项.函数对应的GOT表项
+### .rela
+```bash
+readelf --relocs test
 
-GOT 是一种用于存储全局变量和函数地址的数据结构。它允许动态链接库和共享库在运行时解析全局变量和函数的实际地址，而无需对代码进行重定位。GOT
-的主要作用是实现全局变量和函数的地址无关性，使得库中的代码可以在不同的内存地址运行。
+Relocation section '.rela.dyn' at offset 0x4a8 contains 1 entry:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000403330  000300000006 R_X86_64_GLOB_DAT 0000000000000000 __gmon_start__ + 0
 
-PLT（过程链接表）：
+Relocation section '.rela.plt' at offset 0x4c0 contains 3 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000403350  000100000007 R_X86_64_JUMP_SLO 0000000000000000 printf@GLIBC_2.2.5 + 0
+000000403358  000200000007 R_X86_64_JUMP_SLO 0000000000000000 __libc_start_main@GLIBC_2.2.5 + 0
+000000403360  000400000007 R_X86_64_JUMP_SLO 0000000000000000 __isoc99_scanf@GLIBC_2.7 + 0
+readelf -S test | grep 000000403330 -B 2
+[22] .dynamic          DYNAMIC          0000000000403190  00002190
+       00000000000001a0  0000000000000010  WA       7     0     8
+[23] .got              PROGBITS         0000000000403330  00002330
 
-ELF使用PLT（Procedure Linkage
-Table）来实现延迟绑定，它使用了一些很精巧的指令序列来完成。在Glibc中，动态链接器完成绑定工作的函数叫_dl_runtime_resolve()
-，它必须知道绑定发生在哪个模块中的哪个函数，因此假设其函数原型为_dl_runtime_resolve(module, function)。
-当调用某个外部模块的函数时，并不直接通过GOT跳转，而是通过一个叫作PLT项的结构来进行跳转，每个外部函数在PLT中都有一个相应的项，比如bar()
-函数在PLT中的项的地址称为bar@plt。
-PLT 是一种用于实现懒加载（Lazy Binding）的数据结构。懒加载是一种运行时链接技术，它允许程序在调用外部函数时才解析这些函数的实际地址。PLT
-包含了一系列跳转指令，这些指令会在第一次调用外部函数时触发动态链接器（如 ld.so）来解析函数的实际地址，并将地址填充到 GOT
-中。在后续的函数调用中，程序会直接跳转到 GOT 中的地址，无需再次进行地址解析。
+```
+### 对比分析
+以 printf 函数为例，分析 PLT 和 GOT 的工作过程。
++ .text
+```bash
+objdump --disassemble --full-contents --section=.text test
 
-总结一下，GOT 和 PLT 都是用于支持位置无关代码的数据结构，但它们的主要目的和用途有所不同。GOT 用于存储全局变量和函数的地址，实现地址无关性；而
-PLT 用于实现懒加载，允许程序在调用外部函数时才解析这些函数的实际地址。在动态链接库和共享库中，这两个数据结构通常会一起使用，以实现高效的运行时链接和地址解析。
+401176:       e8 c5 fe ff ff          call   401040 <printf@plt>
+```
++ 比较 看到 main 函数调用printf函数的指令是 callq 0x401040，0x401040正是printf函数的PLT表项的地址。反汇编结果里的403350 <printf@GLIBC_2.2.5>也明确地指出了这一点。
++ .plt
+```bash
+objdump --disassemble --full-contents --section=.plt test
+
+0000000000401040 <printf@plt>:
+  401040:       ff 25 0a 23 00 00       jmp    *0x230a(%rip)        # 403350 <printf@GLIBC_2.2.5>
+  401046:       68 00 00 00 00          push   $0x0
+  40104b:       e9 e0 ff ff ff          jmp    401030 <_init+0x30>
+```
+它跳转到了 0x230a(%rip) 指向的地址，0x230a(%rip) 的内容在反汇编结果的注释中给出了，是 0x403350。0x403350正是printf函数的GOT表项的地址，其内容是 ？？？
++ .rela.plt
+```bash
+readelf --relocs test
+
+Relocation section '.rela.dyn' at offset 0x4a8 contains 1 entry:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000403330  000300000006 R_X86_64_GLOB_DAT 0000000000000000 __gmon_start__ + 0
+
+Relocation section '.rela.plt' at offset 0x4c0 contains 3 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000403350  000100000007 R_X86_64_JUMP_SLO 0000000000000000 printf@GLIBC_2.2.5 + 0
+000000403358  000200000007 R_X86_64_JUMP_SLO 0000000000000000 __libc_start_main@GLIBC_2.2.5 + 0
+000000403360  000400000007 R_X86_64_JUMP_SLO 0000000000000000 __isoc99_scanf@GLIBC_2.7 + 0
+```
++ .got.plt
+```bash
+objdump --full-contents --section=.got.plt test
+
+test:     file format elf64-x86-64
+
+Contents of section .got.plt:
+ 403338 90314000 00000000 00000000 00000000  .1@.............
+ 403348 00000000 00000000 46104000 00000000  ........F.@.....
+ 403358 56104000 00000000 66104000 00000000  V.@.....f.@.....
+```
+0	0x403338	0x0000000000403190	.dynamic 段地址
+1	0x403340	0x0000000000000000	本镜像的link_map数据结构地址，未运行无法确定，故以全 0 填充
+2	0x403348	0x0000000000000000	_dl_runtime_resolve 函数地址，未运行无法确定，故以全 0 填充
+3	0x403350	0x0000000000401046	printf对应的GOT表项，内容是printf的PLT表项地址加6
+可见 0x401040 处的jmp指令实际上跳到了0x401046处，相当于没有跳转。0x401046处的push指令将0x00压栈，可以理解为接下来要调用的函数的参数。接着40104b处的jmp指令跳转到了0x401030即PLT表的第0项。
+```bash
+0000000000401030 <printf@plt-0x10>:
+  401030:       ff 35 0a 23 00 00       push   0x230a(%rip)        # 403340 <_GLOBAL_OFFSET_TABLE_+0x8>
+  401036:       ff 25 0c 23 00 00       jmp    *0x230c(%rip)        # 403348 <_GLOBAL_OFFSET_TABLE_+0x10>
+  40103c:       0f 1f 40 00             nopl   0x0(%rax)
+```
+先是把0x403340即GOT表的第1项压栈，接着跳转到0x403348即GOT表的第2项亦即_dl_runtime_resolve函数，解析printf函数真正的地址。之后会执行printf，并将 printf函数真正的地址写到printf对应的GOT表项中。这样下次调用printf函数时0x401040处的jmp指令会直接跳转到printf函数真正的地址，不用再调用 _dl_runtime_resolve。
+## 参考
+![ELF 文件 PLT 和 GOT 静态分析]https://blog.werner.wiki/elf-plt-got-static-analysis/
+![有价值炮灰]https://www.cnblogs.com/pannengzhi/p/2018-04-09-about-got-plt.html

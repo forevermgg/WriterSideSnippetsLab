@@ -1,0 +1,30 @@
+
+test:     file format elf64-x86-64
+
+Contents of section .plt:
+ 401030 ff350a23 0000ff25 0c230000 0f1f4000  .5.#...%.#....@.
+ 401040 ff250a23 00006800 000000e9 e0ffffff  .%.#..h.........
+ 401050 ff250223 00006801 000000e9 d0ffffff  .%.#..h.........
+ 401060 ff25fa22 00006802 000000e9 c0ffffff  .%."..h.........
+
+Disassembly of section .plt:
+
+0000000000401030 <printf@plt-0x10>:
+  401030:	ff 35 0a 23 00 00    	push   0x230a(%rip)        # 403340 <_GLOBAL_OFFSET_TABLE_+0x8>
+  401036:	ff 25 0c 23 00 00    	jmp    *0x230c(%rip)        # 403348 <_GLOBAL_OFFSET_TABLE_+0x10>
+  40103c:	0f 1f 40 00          	nopl   0x0(%rax)
+
+0000000000401040 <printf@plt>:
+  401040:	ff 25 0a 23 00 00    	jmp    *0x230a(%rip)        # 403350 <printf@GLIBC_2.2.5>
+  401046:	68 00 00 00 00       	push   $0x0
+  40104b:	e9 e0 ff ff ff       	jmp    401030 <_init+0x30>
+
+0000000000401050 <__libc_start_main@plt>:
+  401050:	ff 25 02 23 00 00    	jmp    *0x2302(%rip)        # 403358 <__libc_start_main@GLIBC_2.2.5>
+  401056:	68 01 00 00 00       	push   $0x1
+  40105b:	e9 d0 ff ff ff       	jmp    401030 <_init+0x30>
+
+0000000000401060 <__isoc99_scanf@plt>:
+  401060:	ff 25 fa 22 00 00    	jmp    *0x22fa(%rip)        # 403360 <__isoc99_scanf@GLIBC_2.7>
+  401066:	68 02 00 00 00       	push   $0x2
+  40106b:	e9 c0 ff ff ff       	jmp    401030 <_init+0x30>
