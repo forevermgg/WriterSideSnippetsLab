@@ -1,6 +1,6 @@
 # EHDR
-![readelf-h-training-sample.png](readelf-h-training-sample.png)
-![od-Ax-tx1-N64training-sample.png](od-Ax-tx1-N64training-sample.png)
+![readelf-h-training-sample.png](./readelf-h-training-sample.png)
+![od-Ax-tx1-N64training-sample.png](./od-Ax-tx1-N64training-sample.png)
 ## 二进制解析
 ```Bash
 od -Ad -t x1 -N 64 training-sample

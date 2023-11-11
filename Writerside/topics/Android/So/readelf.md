@@ -1,25 +1,25 @@
 # ELF 
 
-## ELF指令基础
+## 指令基础
 
 ### Header
 ```Bash
 readelf -e /bin/grep  # 显示ELF Header  Program Headers Section Headers
 ```
-###  获取 ELF 文件头
+### 获取文件头
 ```Bash
 readelf -h <path/for/elf>
 ```
-###  获取程序头表（段表）
+### 获取程序头表（段表）
 ```Bash
 readelf -l <path/for/elf>
 ```
-###  获取节表（获取有哪些节）
+### 获取节表（获取有哪些节）
 ```Bash
 readelf -S <path/for/elf>
 ```
-###  获取符号表（列出函数、变量符号）
-####  获取所有符号表（含`.symtab`和`.dynsym`）
+### 获取符号表（列出函数、变量符号）
+#### 获取所有符号表（含`.symtab`和`.dynsym`）
 ```Bash
 readelf -s <path/for/elf>
 ```
@@ -33,23 +33,23 @@ readelf --dyn-syms <path/for/elf>
 ```Bash
 readelf -p <name/of/section> <path/for/elf>
 ```
-####  以二进制打印节，常用于非字符串类型的节，例如`.bss`，`.data` 节
+#### 以二进制打印节，常用于非字符串类型的节，例如`.bss`，`.data` 节
 ```Bash
 readelf -x <name/of/section> <path/for/elf>
 ```
-###  以汇编打印二进制代码
+### 以汇编打印二进制代码
 ```Bash
 objdump -d -j <name/of/section> <path/for/elf>
 ```
 
-### 十六进制显示section的内容
+### 十六进制显示节内容
 ```Bash
 # 十六进制显示 section 的内容, 可以使用 section 编号或者名字
 # readelf -x --hex-dump=<number|name>
 readelf -x 29 /bin/grep  # 查看 .shstrtab section, 编号 29
 readelf -x .data /bin/grep  # 查看 .data section
 ```
-### 字符串方式显示section的内容
+### 字符串方式显示节内容
 ```Bash
 # 字符串方式显示 section 的内容, 可以使用 section 编号或者名字
 # readelf -p --string-dump=<number|name>
@@ -77,18 +77,18 @@ readelf -l <path/for/elf>
 readelf -S <filename>
 ```
 ### `.dynsym` && `.symtab`
-####  符号表
+#### 符号表
 符号表包含用来定位、重定位程序中符号定义和引用的信息，简单的理解就是符号表记录了该文件中的所有符号，所谓的符号就是经过修饰了的函数名或者变量名。
 动态符号表，段名通常叫做.dynsym，用于表示模块之间的符号导入导出关系。.dynsym只保存了与动态链接相关的符号，.symtab中往往保存了所有符号，包括.dynsym中的符号。一般动态链接的模块同时拥有.dynsym和.symtab两个表。
 与.symtab类似，动态符号表也需要一些辅助的表，比如动态符号字符串表.dynstr。 由于动态链接在程序运行时查找符号，为了加快符号的查找过程，往往还有辅助的符号哈希表.hash。
 `.symtab`保存了这个可执行文件或者是`.so`中的所有符号信息。 `.dynsym` 是 `.symtab` 的一个子集，实际代码运行中其实只需要`.dynsym`.
-#####  获取符号表
+##### 获取符号表
 `Symbol Table` 包含 `.symtab` 和 `.dynsym`
 `.symtab`，俗称的符号表，记录了所有符号，不管是自己定义的变量、函数，还是未定义需要动态库提供实现的所有符号。
 ```Bash
 readelf -s <path/for/elf>
 ```
-##### 获取 动态符号表
+##### 获取动态符号表
 `.dynsym`，动态链接才需要的符号表，即可包括对外提供调用的符号，也包括需要外面提供实现的符号。
 ```Bash
 readelf --dyn-syms <path/for/elf>
@@ -97,7 +97,7 @@ readelf -sD <path/for/elf>
 `.dynsym`节保存在`text`段中。其保存了从共享库导入的动态符号表。
 `.dynsym`表包含动态链接的符号，例如`libc`函数，`.symtab`表包含源代码中定义的所有符号（包括`.dynsym`表中的符号）。
 
-### 符号表 Type
+### 符号表Type
 符号表可能很长。为简单起见，让我们分别查看每种符号类型。
 
 + `OBJECT`：代码中声明的全局变量。
