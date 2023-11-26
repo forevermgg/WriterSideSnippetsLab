@@ -1,7 +1,10 @@
 # EHDR
+
 ![readelf-h-training-sample.png](./readelf-h-training-sample.png)
 ![od-Ax-tx1-N64training-sample.png](./od-Ax-tx1-N64training-sample.png)
+
 ## 二进制解析
+
 ```Bash
 od -Ad -t x1 -N 64 training-sample
 0000000    7f  45  4c  46  02  01  01  00  00  00  00  00  00  00  00  00
@@ -16,7 +19,9 @@ xxd -u -a -g 1 -s 0 -l 64 training-sample
 00000020: 40 00 00 00 00 00 00 00 10 1B 00 00 00 00 00 00  @...............
 00000030: 00 00 00 00 40 00 38 00 09 00 40 00 1D 00 1C 00  ....@.8...@.....
 ```
+
 ### 第一行
+
 7f  45  4c  46  02  01  01  00  00  00  00  00  00  00  00  00
 
 |               Value                |             Type             |    TAG     |
@@ -29,6 +34,7 @@ xxd -u -a -g 1 -s 0 -l 64 training-sample
 | 00  00  00  00  00  00  00  00  00 |           填充字段无意义            | 补齐字节，一般为0  |
 
 ### 第二行
+
 03  00  3e  00  01  00  00  00  80  06  00  00  00  00  00  00
 
 |             Value              |                                                                           Type                                                                            |  TAG   |
@@ -39,6 +45,7 @@ xxd -u -a -g 1 -s 0 -l 64 training-sample
 | 80  06  00  00  00  00  00  00 |                                                                     e_entry 程序入口的虚拟地址                                                                     |        |
 
 ### 第三行
+
 40  00  00  00  00  00  00  00  10  1b  00  00  00  00  00  00
 |             Value              |       Type        | TAG |
 |:------------------------------:|:-----------------:|:---:|
@@ -46,6 +53,7 @@ xxd -u -a -g 1 -s 0 -l 64 training-sample
 | 10  1b  00  00  00  00  00  00 | e_shoff 节头表在该文件内的偏移，单位是字节 |     |
 
 ### 第四行
+
 00  00  00  00  40  00  38  00  09  00  40  00  1d  00  1c  00
 |             Value              |       Type        | TAG |
 |:------------------------------:|:-----------------:|:---:|
@@ -58,8 +66,11 @@ xxd -u -a -g 1 -s 0 -l 64 training-sample
 | 1c  00 | e_shstrndx 节头表中包含节名字的字符串表索引 |     |
 
 ## 字符串表表项
+
 ### 获取字符串表表项地址
+
 0x1C 0x00 这个表项，也就是第 28 个表项。
+
 ```Bash
  readelf -S training-sample        
 There are 29 section headers, starting at offset 0x1b10:
@@ -77,27 +88,34 @@ Key to Flags:
   C (compressed), x (unknown), o (OS specific), E (exclude),
   D (mbind), l (large), p (processor specific)
 ```
+
 其中的第 28 个 Section，描述的正是字符串表 Section:
-```
+
+```bash
 .shstrtab         STRTAB           0000000000000000  00001a0f
 00000000000000fe  0000000000000000           0     0     1
 ```
+
 这个 Section 在 ELF 文件中的偏移地址是`0x00001a0f` 6671
 
-
 ### 计算e_shoff偏移
+
 ELF 文件中的开始地址(e_shoff)10  1b  00  00  00  00  00  00
-https://jisuan5.com/hexadecimal-to-decimal/
+<https://jisuan5.com/hexadecimal-to-decimal/>
 0x0000000000001b10             6928
 
 ### 计算节头表项的大小
+
 e_shentsize 节头表项的大小40  00
-https://jisuan5.com/hexadecimal-to-decimal/
+<https://jisuan5.com/hexadecimal-to-decimal/>
 0x0040   64
 
 ### 第 28 个表项的开始地址
+
 注意这里的计算都是从 0 开始的，因此第 28 个表项的开始地址就是：6928 + （28 * 64） = 6928 + 1792 = 8720，也就是说用来描述字符串表这个 Section 的表项，位于 ELF 文件的 8720 字节的位置。
+
 ### 获取字符串表项section
+
 |  成员   | 大小（32位） | 大小（64位） |
 |:-----:|:-------:|:-------:|
 | Word  |    4    |    4    |
@@ -109,6 +127,7 @@ Elf64_Word  4 个字节
 Elf64_Xword 8个字节
 Elf64_Addr 8个字节
 Elf64_Off 8个字节
+
 ```C
 typedef struct {
 Elf64_Word    sh_name;        // 节区名字在字符串表中的偏移量
@@ -123,6 +142,7 @@ Elf64_Xword   sh_addralign;   // 节区地址对齐约束
 Elf64_Xword   sh_entsize;     // 固定大小条目的大小
 } Elf64_Shdr;
 ```
+
 ```Bash
 od -Ad -t x1 -j 8720 -N 64  training-sample
 0008720    11  00  00  00  03  00  00  00  00  00  00  00  00  00  00  00
@@ -131,6 +151,7 @@ od -Ad -t x1 -j 8720 -N 64  training-sample
 0008768    01  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
 0008784
 ```
+
 其中的 -j 8720 选项，表示跳过前面的 8720 个字节，也就是我们从 training-sample 这个 ELF 文件的 8720 字节处开始读取，一共读 64 个字节。
 
 |             Value              |                     Type                      | TAG |
@@ -141,16 +162,19 @@ od -Ad -t x1 -j 8720 -N 64  training-sample
 | 00  00  00  00  00  00  00  00 |      sh_addr 该节在内存中的虚拟地址，如果不加载到内存中，地址是0       |     |
 | 0f  1a  00  00  00  00  00  00 |           sh_offset 该节在文件中的偏移，单位是字节           |     |
 | fe  00  00  00  00  00  00  00 | sh_size 当前节在文件中占用的空间，唯一的例外是SHT_NOBITS，不占用文件空间 |     |
-|         00  00  00  00         |      sh_link /* Link to other section */      |     |
-|         00  00  00  00         |    sh_info /* Miscellaneous information */    |     |
-| 01  00  00  00  00  00  00  00 | sh_addralign /* Address alignment boundary */ |     |
+|         00  00  00  00         |      sh_link /*Link to other section*/      |     |
+|         00  00  00  00         |    sh_info /*Miscellaneous information*/    |     |
+| 01  00  00  00  00  00  00  00 | sh_addralign /*Address alignment boundary*/ |     |
 | 00  00  00  00  00  00  00  00 |                  sh_entsize                   |     |
+
 + sh_name：节名称sh_name的值是节名字符串的一个索引，节名称字符串以’\0’结尾，字符串统一存放在.shstrtab表中，使用sh_name的值作为节区头部字符串表的索引，找到对应的字符串即为节名称；字符串表中包含多个以’\0’结尾的字符串；在目标文件中，这些字符串通常是符号的名字或节的名字，需要引用某些字符串时，只需要提供该字符串在节区头部字符串表中的序号即可；节区头部字符串表中的第一个字符串（序号为0）是空串，即’\0’，可以用于表示没有名字或一个空的名字；如果节区头部字符串表为空，节头中的sh_size值为0。
 注意：节区头部字符串表是给节区头部表专门准备的字符串表，ELF文件中通常存在两个字符串表:
-* 一个是代码中所有使用到的字符串的表，名称为.strtab
-* 一个是记录所有节区名的字符串表，名称为.shstrtab
+
++ 一个是代码中所有使用到的字符串的表，名称为.strtab
++ 一个是记录所有节区名的字符串表，名称为.shstrtab
 
 二者通常是没有关系的，节区头部字符串表中只记录节区名称，如下:
+
 ```Bash
 readelf -p .shstrtab training-sample
 
@@ -182,7 +206,9 @@ String dump of section '.shstrtab':
   [    f0]  .bss
   [    f5]  .comment
 ```
+
 而字符串表则记录符号表中符号相关的字符串信息，如:
+
 ```Bash
 readelf -p .strtab training-sample | head -n 10
 
@@ -196,7 +222,9 @@ String dump of section '.strtab':
   [    79]  __frame_dummy_init_array_entry
   [    98]  training_sample.c
 ```
+
 + sh_type：节的类型；
+
 ```C
 // 文件路径：include/uapi/linux/elf.h
 /* sh_type */
@@ -218,7 +246,9 @@ String dump of section '.strtab':
 #define SHT_LOUSER    0x80000000 //此值给出保留给应用程序的索引下界。
 #define SHT_HIUSER    0xffffffff //此值给出保留给应用程序的索引上界。
 ```
+
 + sh_flags：节的标志；标志着此节区是否可以修改，是否可以执行，具体定义如下：
+
 ```C
 // 文件路径：include/uapi/linux/elf.h
 /* sh_flags */
@@ -234,14 +264,18 @@ String dump of section '.strtab':
 + sh_size：表示这个 Section 的长度。0x00000000000000fe = 254 个字节，意思是字符串表这个 Section 的内容，一共有 254 个字节。
 
 ### 验证正确性
+
 还记得刚才我们使用 readelf 工具，读取到字符串表 Section 在 ELF 文件中的偏移地址是 0x00001a0f，长度是 0x00000000000000fe 个字节吗？
+
 ```
 .shstrtab         STRTAB           0000000000000000  00001a0f
 00000000000000fe  0000000000000000           0     0     1
 ```
 
 ### 获取字符串表项内容
+
 既然知道了字符串表这个 Section 在 ELF 文件中的偏移量以及长度，那么就可以把它的字节码内容读取出来。
+
 ```Bash
 od -Ad -t c -j 6671 -N 254 training-sample
 0006671   \0   .   s   y   m   t   a   b  \0   .   s   t   r   t   a   b
@@ -262,10 +296,12 @@ od -Ad -t c -j 6671 -N 254 training-sample
 0006911    .   b   s   s  \0   .   c   o   m   m   e   n   t  \0        
 0006925
 ```
+
 sh_name 这个字段，它表示字符串表这个 Section 本身的名字，既然是名字，那一定是个字符串。
 
 但是这个字符串不是直接存储在这里的，而是存储了一个索引，索引值是 0x00000011，也就是十进制数值 17。
 `.shstrtab` 这个字符串(\0是字符串的分隔符)？！
+
 ## 程序入口
 
 |  成员   | 大小（32位） | 大小（64位） |
@@ -279,6 +315,7 @@ Elf64_Word  4 个字节
 Elf64_Xword 8个字节
 Elf64_Addr 8个字节
 Elf64_Off 8个字节
+
 ```Bash
 readelf -l training-sample
 
@@ -322,6 +359,7 @@ Program Headers:
    08     .init_array .fini_array .dynamic .got 
 
 ```
+
 这是一个可执行程序;
 入口地址是  0x680;
 一共有 9 个 Program header，是从 ELF 文件的 64 个偏移地址开始的;
@@ -330,9 +368,10 @@ Program Headers:
 字段 e_phentsize: 每一个表项的长度是  0x38 = 56 个字节;
 字段 e_phnum: 一共有 9 个表项 Entry;
 
-
 ## 获取load段便宜地址
+
 64 + 56 * 2 = 64 + 112 = 176 = 0xb0
+
 ```C
 typedef struct {
     Elf64_Word    p_type;         // 段类型
@@ -360,7 +399,9 @@ hexdump -s 176 -n 56 -e '"%08_ad " 16/1 "%02x " "\n"' training-sample
 00000208 78 0a 00 00 00 00 00 00 78 0a 00 00 00 00 00 00
 00000224 00 00 20 00 00 00 00 00            
 ```
+
 + p_type：4个字节，用来指明程序中该段的类型；
+
 ```C
 // 文件路径：include/uapi/linux/elf.h
 /* These constants are for the segment types stored in the image headers */
@@ -378,7 +419,9 @@ hexdump -s 176 -n 56 -e '"%08_ad " 16/1 "%02x " "\n"' training-sample
 #define PT_HIPROC  0x7fffffff
 #define PT_GNU_RELRO    (PT_LOOS + 0x474e552)
 ```
+
 + p_flags：4个字节，用来指明与本段相关的标志；
+
 ```C
 // 文件路径：include/uapi/linux/elf.h
 /* These constants define the permissions on sections in the program
@@ -387,13 +430,10 @@ header, p_flags. */
 #define PF_W        0x2
 #define PF_X        0x1
 ```
+
 + p_filesz: 这个段在 ELF 文件中，占据的字节数，0x0a78 = 2680 个字节;
 + p_memsz：这个段加载到内存中，需要占据的字节数，0x0a78= 2680 个字节。注意：有些段是不需要加载到内存中的;
 
 ## 参考
+
 ![Linux ELF二进制文件解析及实战](https://mp.weixin.qq.com/s/Q4xrm8xraTwYMd6DMRGROA)
-
-
-
-
-

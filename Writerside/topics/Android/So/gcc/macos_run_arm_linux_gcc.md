@@ -1,7 +1,9 @@
 # macos-cross-toolchains
+
 ![macos-cross-toolchains](https://github.com/messense/homebrew-macos-cross-toolchains)
 
 ## is_not_linux_gcc
+
 ```bash
 gcc -v
 Apple clang version 15.0.0 (clang-1500.0.40.1)
@@ -10,7 +12,8 @@ Thread model: posix
 InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
 ```
 
-## install using Homebrew:
+## install using Homebrew
+
 ```Bash
 brew tap messense/macos-cross-toolchains
 # install x86_64-unknown-linux-gnu toolchain
@@ -20,6 +23,7 @@ brew install aarch64-unknown-linux-gnu
 ```
 
 ## check
+
 ```Bash
 aarch64-linux-gnu-cc -v
 Using built-in specs.
@@ -42,7 +46,8 @@ Supported LTO compression algorithms: zlib
 gcc version 11.2.0 (GCC) 
 ```
 
-## build 
+## build
+
 ```Bash
 aarch64-linux-gnu-gcc -c training_sample.c
 ```

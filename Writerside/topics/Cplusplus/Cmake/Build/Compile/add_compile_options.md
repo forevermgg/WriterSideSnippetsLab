@@ -1,4 +1,4 @@
-## add_compile_options
+# add_compile_options
 
 `add_compile_options`是一个`CMake`命令，用于向编译器添加额外的编译选项。它可以用来设置编译器的标志或选项，以便控制编译过程中的行为。
 以下是`add_compile_options`命令的示例用法：
@@ -21,7 +21,7 @@ endif()
 （包含调试信息）选项添加到编译选项中，以方便调试。在其他构建类型下，将`-O2`（启用优化级别2）选项添加到编译选项中，以提高代码执行性能。
 通过使用`add_compile_options `命令，您可以向`CMake`构建系统传递额外的编译选项，以满足特定的编译需求或优化要求。这样可以灵活地控制编译器的行为，以适应不同的情况和需求。
 
-### add_compile_options(-fvisibility=hidden)
+## add_compile_options(-fvisibility=hidden)
 
 `add_compile_options`(`-fvisibility=hidden`) 是将`-fvisibility=hidden`编译选项添加到`CMake`
 项目中的示例。这个编x选项用于设置隐藏符号（`hidden symbol`）的可见性。

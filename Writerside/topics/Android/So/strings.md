@@ -1,4 +1,4 @@
-## strings 搜索so字符串工具
+# strings 搜索so字符串工具
 
 ```bash
 ❯ strings -a libc++_shared.so | grep use_face

@@ -1,7 +1,8 @@
-### JSONParser.cmake
-https://github.com/sbellus/json-cmake
+# JSONParser.cmake
 
-```
+<https://github.com/sbellus/json-cmake>
+
+```Cmake
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/deps_lib_list.json deps_lib_json)
 
 sbeParseJson(json_result deps_lib_json)

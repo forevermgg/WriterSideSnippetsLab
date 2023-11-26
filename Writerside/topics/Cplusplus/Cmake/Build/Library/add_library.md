@@ -1,4 +1,4 @@
-## add_library
+# add_library
 
 `add_library`是一个`CMake`命令，用于在项目中创建一个库目标。它可以用来创建静态库`(Static Library)`
 或共享库`(Shared Library)`。
@@ -27,7 +27,7 @@ add_library(mylib SHARED mylib.cpp)
 
 通过使用`add_library`命令，您可以方便地在 CMake 项目中创建库目标，从而将代码组织为可重用的模块，并在其他目标中使用它们。
 
-### add_library(snappy "")
+## add_library(snappy "")
 
 `add_library()`函数用于向`CMake`构建系统添加一个库。在这个例子中，我们添加了名为`snappy`的库。
 
@@ -38,9 +38,9 @@ add_library(mylib SHARED mylib.cpp)
 
 请注意，这行代码只是创建了一个空的库目标，需要在后续的代码中添加源文件并进行相关的配置和链接操作，才能最终生成可用的库文件。
 
-### add_library STATIC
+## add_library STATIC
 
-```
+```Bash
 add_library(utils STATIC IMPORTED)
 set_target_properties(utils PROPERTIES IMPORTED_LOCATION
         ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libutils.a)
@@ -48,13 +48,12 @@ set_target_properties(utils PROPERTIES IMPORTED_LOCATION
 add_library(archive STATIC archive.cpp zip.cpp lzma.cpp)        
 ```
 
-### add_library SHARED
+## add_library SHARED
 
-```
+```Bash
 add_library(filament-jni SHARED
     src/main/cpp/*.cpp
     src/main/cpp/*.cc
     src/main/cpp/*.h
 )
 ```
-

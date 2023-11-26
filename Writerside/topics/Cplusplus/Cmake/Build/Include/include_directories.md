@@ -1,4 +1,5 @@
-## include_directories
+# include_directories
+
 在`CMake`中，`include_directories`命令用于指定编译器在查找头文件时搜索的目录。通过将需要包含的头文件所在目录添加到搜索路径中，可以确保编译器能够正确地找到和包含这些头文件。
 
 以下是`include_directories`的使用方法：
@@ -6,6 +7,7 @@
 ```cmake
 include_directories([AFTER|BEFORE] [SYSTEM] [DIRECTORY dir1 [dir2 ...]])
 ```
+
 + AFTER 或 BEFORE：可选参数，用于指定添加的搜索路径相对于已存在搜索路径的位置。
 + SYSTEM：可选参数，用于标识添加的搜索路径为系统头文件路径。
 + DIRECTORY dir1 [dir2 ...]：指定要添加的搜索路径。
