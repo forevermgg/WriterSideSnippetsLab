@@ -101,13 +101,13 @@ Key to Flags:
 ### 计算e_shoff偏移
 
 ELF 文件中的开始地址(e_shoff)10  1b  00  00  00  00  00  00
-<https://jisuan5.com/hexadecimal-to-decimal/>
+https://jisuan5.com/hexadecimal-to-decimal/
 0x0000000000001b10             6928
 
 ### 计算节头表项的大小
 
 e_shentsize 节头表项的大小40  00
-<https://jisuan5.com/hexadecimal-to-decimal/>
+https://jisuan5.com/hexadecimal-to-decimal/
 0x0040   64
 
 ### 第 28 个表项的开始地址
@@ -162,9 +162,9 @@ od -Ad -t x1 -j 8720 -N 64  training-sample
 | 00  00  00  00  00  00  00  00 |      sh_addr 该节在内存中的虚拟地址，如果不加载到内存中，地址是0       |     |
 | 0f  1a  00  00  00  00  00  00 |           sh_offset 该节在文件中的偏移，单位是字节           |     |
 | fe  00  00  00  00  00  00  00 | sh_size 当前节在文件中占用的空间，唯一的例外是SHT_NOBITS，不占用文件空间 |     |
-|         00  00  00  00         |      sh_link /*Link to other section*/      |     |
-|         00  00  00  00         |    sh_info /*Miscellaneous information*/    |     |
-| 01  00  00  00  00  00  00  00 | sh_addralign /*Address alignment boundary*/ |     |
+|         00  00  00  00         |       sh_link /*Link to other section*/       |     |
+|         00  00  00  00         |     sh_info /*Miscellaneous information*/     |     |
+| 01  00  00  00  00  00  00  00 |  sh_addralign /*Address alignment boundary*/  |     |
 | 00  00  00  00  00  00  00  00 |                  sh_entsize                   |     |
 
 + sh_name：节名称sh_name的值是节名字符串的一个索引，节名称字符串以’\0’结尾，字符串统一存放在.shstrtab表中，使用sh_name的值作为节区头部字符串表的索引，找到对应的字符串即为节名称；字符串表中包含多个以’\0’结尾的字符串；在目标文件中，这些字符串通常是符号的名字或节的名字，需要引用某些字符串时，只需要提供该字符串在节区头部字符串表中的序号即可；节区头部字符串表中的第一个字符串（序号为0）是空串，即’\0’，可以用于表示没有名字或一个空的名字；如果节区头部字符串表为空，节头中的sh_size值为0。

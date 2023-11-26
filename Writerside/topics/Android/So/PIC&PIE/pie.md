@@ -1,6 +1,6 @@
 # 关于Linux下gcc 编译 C 源文件时，生成的是Shared object file而不是Executable file
->
-> <https://ch3nye.top/Linux%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E6%9E%90%E7%AC%94%E8%AE%B0(ELF)/>
+
+https://ch3nye.top/Linux%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E6%9E%90%E7%AC%94%E8%AE%B0(ELF)
 
 最近在`Debian`下写`C`时，发现用`readelf`命令查看编译后的可执行文件类型时，发现文件类型是`DYN`(`Shared object file`)，而不是`EXEC`(`Executable file`)。
 
