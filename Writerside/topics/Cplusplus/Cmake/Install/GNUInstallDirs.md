@@ -1,4 +1,4 @@
-## GNUInstallDirs
+# GNUInstallDirs
 
 `include(GNUInstallDirs)`是一个`CMake`的命令，用于包含`GNUInstallDirs`模块。该模块提供了一组预定义的变量，用于在不同操作系统上安装软件时确定标准目录。
 
@@ -40,4 +40,3 @@ DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR})
 在上面的示例中，我们通过`include(GNUInstallDirs)`导入了`GNUInstallDirs`模块，然后使用其中定义的变量来指定安装目录。这样，在执行安装命令时，`CMake`将根据当前操作系统和配置自动确定正确的目录位置，并将相关文件安装到相应的目录中。
 
 注意：`include(GNUInstallDirs)`的可用性取决于你所使用的 CMake 版本和平台。如果该命令无法正常工作，可能需要手动设置相关的目录变量。
-

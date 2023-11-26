@@ -1,4 +1,4 @@
-## ps aux | grep -i studio
+# ps aux | grep -i studio
 
 ```bash
 ❯ ps aux | grep -i studio

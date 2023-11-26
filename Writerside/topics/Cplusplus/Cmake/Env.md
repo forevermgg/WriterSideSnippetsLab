@@ -1,9 +1,11 @@
-### 获取环境变量
+# 获取环境变量
+
 ```cmake
 if (NOT "$ENV{FIREBASE_CPP_SDK_DIR}" STREQUAL "")
     # 执行一些操作
 endif()
 ```
+
 + `"$ENV{FIREBASE_CPP_SDK_DIR}"`用于获取名为`FIREBASE_CPP_SDK_DIR`的环境变量的值。
 + `STREQUAL`是一个字符串比较运算符，用于比较两个字符串是否相等。
 + `NOT`是一个逻辑运算符，用于对表达式取反。

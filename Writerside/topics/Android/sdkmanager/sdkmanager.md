@@ -1,18 +1,18 @@
-## $ANDROID_HOME/tools/bin/sdkmanager --list 报错
+# $ANDROID_HOME/tools/bin/sdkmanager --list 报错
 
 ```Bash
 ❯ $ANDROID_HOME/tools/bin/sdkmanager --list
 Exception in thread "main" java.lang.NoClassDefFoundError: javax/xml/bind/annotation/XmlSchema
-	at com.android.repository.api.SchemaModule$SchemaModuleVersion.<init>(SchemaModule.java:156)
-	at com.android.repository.api.SchemaModule.<init>(SchemaModule.java:75)
-	at com.android.sdklib.repository.AndroidSdkHandler.<clinit>(AndroidSdkHandler.java:81)
-	at com.android.sdklib.tool.sdkmanager.SdkManagerCli.main(SdkManagerCli.java:73)
-	at com.android.sdklib.tool.sdkmanager.SdkManagerCli.main(SdkManagerCli.java:48)
+ at com.android.repository.api.SchemaModule$SchemaModuleVersion.<init>(SchemaModule.java:156)
+ at com.android.repository.api.SchemaModule.<init>(SchemaModule.java:75)
+ at com.android.sdklib.repository.AndroidSdkHandler.<clinit>(AndroidSdkHandler.java:81)
+ at com.android.sdklib.tool.sdkmanager.SdkManagerCli.main(SdkManagerCli.java:73)
+ at com.android.sdklib.tool.sdkmanager.SdkManagerCli.main(SdkManagerCli.java:48)
 Caused by: java.lang.ClassNotFoundException: javax.xml.bind.annotation.XmlSchema
-	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:581)
-	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:178)
-	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521)
-	... 5 more
+ at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:581)
+ at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:178)
+ at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521)
+ ... 5 more
 ```
 
 sdkmanager 使用的lib目录
@@ -113,5 +113,3 @@ Available Updates:
 ```Bash
 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --list
 ```
-
-

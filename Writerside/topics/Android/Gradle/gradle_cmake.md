@@ -1,4 +1,5 @@
-## Gradle管理Cmake
+# Gradle管理Cmake
+
 ```Gradle
 ext.cppFlags = [
         "-std=c++17",

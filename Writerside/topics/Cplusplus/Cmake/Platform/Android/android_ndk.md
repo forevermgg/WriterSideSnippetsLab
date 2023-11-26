@@ -1,4 +1,4 @@
-Android NDK 变量
+# Android NDK 变量
 
 ```cmake
 set(CMAKE_SYSTEM_NAME Android)
@@ -17,7 +17,7 @@ message("CMAKE_ANDROID_STL_TYPE ${CMAKE_ANDROID_STL_TYPE}")
 
 使用独立工具链进行 Android 交叉编译
 
-```
+```cmake
 message("CMAKE_SYSTEM_NAME ${CMAKE_SYSTEM_NAME}")
 message("CMAKE_ANDROID_STANDALONE_TOOLCHAIN ${CMAKE_ANDROID_STANDALONE_TOOLCHAIN}")
 message("CMAKE_ANDROID_ARM_MODE ${CMAKE_ANDROID_ARM_MODE}")
