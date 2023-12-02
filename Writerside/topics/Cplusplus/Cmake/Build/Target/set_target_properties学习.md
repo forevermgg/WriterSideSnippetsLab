@@ -127,15 +127,3 @@ set_target_properties(filament-jni PROPERTIES LINK_DEPENDS ${VERSION_SCRIPT})
 set_target_properties(filament-utils-jni PROPERTIES LINK_DEPENDS
         ${CMAKE_CURRENT_SOURCE_DIR}/libfilament-utils-jni.symbols)
 ```
-
-
-
-
-
-
-
-
-
-
-
-
