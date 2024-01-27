@@ -12,3 +12,8 @@ List of devices attached
 ```zsh
 adb -s a38b2e8 install demo.apk
 ```
+
+logcat 限制
+```zsh
+adb logcat -G 200M
+```
