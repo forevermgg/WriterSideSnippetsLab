@@ -17,3 +17,7 @@ Format - IYUV (I420)
 Resolution - 1280x720
 Frame rate - 25 fps
 Duration - 2s
+
+
+URL：
+https://gw.alicdn.com/bao/uploaded/LB1l2iXISzqK1RjSZFjXXblCFXa.mp4?file=LB1l2iXISzqK1RjSZFjXXblCFXa.mp4
