@@ -1,6 +1,5 @@
-
 ## 案例1
-```
+```c++
 template <typename Function>
 class UniqueFunction;
 
@@ -8,7 +7,8 @@ template <typename Functor>
 using EnableIfCallable = std::enable_if_t<std::conjunction_v<std::is_invocable_r<RetType, Functor, Args...>,
                                           std::negation<std::is_same<std::decay_t<Functor>, UniqueFunction>>>,
                                           int>;
-```c++
+```
+
 利用`std::is_invocable`在编译期间判断函数与传递参数是否匹配
 `EnableIfCallable`是一个模板别名`template alias`，用于定义一个类型特性，该特性仅在给定的`Functor`可以被调用并返回`RetType`类型的值时启用。这里的`Functor`是一个通用的函数对象类型,`RetType`是期望的返回类型，而`Args...`是函数对象的参数类型。
 
@@ -22,10 +22,10 @@ using EnableIfCallable = std::enable_if_t<std::conjunction_v<std::is_invocable_r
 
 
 ## 案例2
-```
+```c++
 using CallerType = std::remove_cv_t<std::remove_pointer_t<std::remove_reference_t<decltype(this)>>>;
 std::is_base_of_v<ViewModel, CallerType>
-```c++
+```
 `CallerType`是一个类型别名，它表示去除`const`、`volatile`、指针和引用修饰符后的`decltype(this)`类型。
 
 `decltype(this)`获取当前成员函数所属类的指针类型。
